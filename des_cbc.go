@@ -53,6 +53,11 @@ func (d *DesCBCCrypto) Decode(cryptedStr, secret string) string {
 }
 
 func (d *DesCBCCrypto) EncodeBytes(text, secret []byte) []byte {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println(r)
+		}
+	}()
 	key := secret
 	key = d.GenKey(key)
 	block, err := des.NewCipher(key)

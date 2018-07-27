@@ -94,6 +94,11 @@ func (c *AesCrypto) EncodeBytes(rawData, authKey []byte) []byte {
 }
 
 func (c *AesCrypto) DecodeBytes(cryptedData, authKey []byte) []byte {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println(r)
+		}
+	}()
 	in := cryptedData
 	key := authKey
 	key = c.aesKey(key)
