@@ -95,7 +95,8 @@ func (d *DesCBCCrypto) GenKey(key []byte) []byte {
 	ckey := string(key)
 	kkey, ok := d.key[ckey]
 	if !ok {
-		d.key[ckey] = DesGenKey(key)
+		kkey = DesGenKey(key)
+		d.key[ckey] = kkey
 	}
 	return kkey
 }
