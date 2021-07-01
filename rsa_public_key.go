@@ -14,7 +14,9 @@ import (
 // 设置公钥
 func NewRSAPublicKey(publicKey []byte) (r *RSAPublicKey, err error) {
 	r = &RSAPublicKey{}
-	err = r.SetPublicKeyBytes(publicKey)
+	if publicKey != nil {
+		err = r.SetPublicKeyBytes(publicKey)
+	}
 	return
 }
 

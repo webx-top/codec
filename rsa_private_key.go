@@ -14,7 +14,9 @@ import (
 // 设置私钥
 func NewRSAPrivateKey(privateKey []byte) (r *RSAPrivateKey, err error) {
 	r = &RSAPrivateKey{}
-	err = r.SetPrivateKeyBytes(privateKey)
+	if privateKey != nil {
+		err = r.SetPrivateKeyBytes(privateKey)
+	}
 	return
 }
 
