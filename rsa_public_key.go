@@ -14,7 +14,7 @@ import (
 // 设置公钥
 func NewRSAPublicKey(publicKey []byte) (r *RSAPublicKey, err error) {
 	r = &RSAPublicKey{}
-	err = r.SetPublickey(publicKey)
+	err = r.SetPublicKeyBytes(publicKey)
 	return
 }
 
@@ -23,14 +23,19 @@ type RSAPublicKey struct {
 	publicKey *rsa.PublicKey //公钥
 }
 
-func (r *RSAPublicKey) SetPublickey(publicKey []byte) error {
+func (r *RSAPublicKey) SetPublicKeyBytes(publicKey []byte) error {
 	r.keyBytes = publicKey
-	_, err := r.GetPublickey()
+	_, err := r.GetPublicKey()
 	return err
 }
 
+func (r *RSAPublicKey) SetPublicKey(publicKey *rsa.PublicKey) *RSAPublicKey {
+	r.publicKey = publicKey
+	return r
+}
+
 // *rsa.PrivateKey
-func (r *RSAPublicKey) GetPublickey() (*rsa.PublicKey, error) {
+func (r *RSAPublicKey) GetPublicKey() (*rsa.PublicKey, error) {
 	var err error
 	if r.publicKey == nil {
 		r.publicKey, err = getPublicKey(r.keyBytes)

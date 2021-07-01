@@ -14,7 +14,7 @@ import (
 // 设置私钥
 func NewRSAPrivateKey(privateKey []byte) (r *RSAPrivateKey, err error) {
 	r = &RSAPrivateKey{}
-	err = r.SetPrivateKey(privateKey)
+	err = r.SetPrivateKeyBytes(privateKey)
 	return
 }
 
@@ -23,14 +23,19 @@ type RSAPrivateKey struct {
 	privateKey *rsa.PrivateKey //私钥
 }
 
-func (r *RSAPrivateKey) SetPrivateKey(privateKey []byte) error {
+func (r *RSAPrivateKey) SetPrivateKeyBytes(privateKey []byte) error {
 	r.keyBytes = privateKey
-	_, err := r.GetPrivatekey()
+	_, err := r.GetPrivateKey()
 	return err
 }
 
+func (r *RSAPrivateKey) SetPrivateKey(privateKey *rsa.PrivateKey) *RSAPrivateKey {
+	r.privateKey = privateKey
+	return r
+}
+
 // *rsa.PrivateKey
-func (r *RSAPrivateKey) GetPrivatekey() (*rsa.PrivateKey, error) {
+func (r *RSAPrivateKey) GetPrivateKey() (*rsa.PrivateKey, error) {
 	var err error
 	if r.privateKey == nil {
 		r.privateKey, err = getPrivateKey(r.keyBytes)
