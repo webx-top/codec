@@ -12,30 +12,39 @@ import (
 )
 
 // 设置公钥
-func NewRSAPublicKey(pubStr string) (r *RSAPublicKey, err error) {
+func NewRSAPublicKey(publicKey []byte) (r *RSAPublicKey, err error) {
 	r = &RSAPublicKey{}
-	r.pubStr = pubStr
-	r.pubkey, err = r.GetPublickey()
+	err = r.SetPublickey(publicKey)
 	return
 }
 
 type RSAPublicKey struct {
-	pubStr string         //公钥字符串
-	pubkey *rsa.PublicKey //公钥
+	keyBytes  []byte         //公钥内容
+	publicKey *rsa.PublicKey //公钥
+}
+
+func (r *RSAPublicKey) SetPublickey(publicKey []byte) error {
+	r.keyBytes = publicKey
+	_, err := r.GetPublickey()
+	return err
 }
 
 // *rsa.PrivateKey
 func (r *RSAPublicKey) GetPublickey() (*rsa.PublicKey, error) {
-	return getPubKey([]byte(r.pubStr))
+	var err error
+	if r.publicKey == nil {
+		r.publicKey, err = getPublicKey(r.keyBytes)
+	}
+	return r.publicKey, err
 }
 
 // 公钥加密
 func (r *RSAPublicKey) Encrypt(input []byte) ([]byte, error) {
-	if r.pubkey == nil {
+	if r.publicKey == nil {
 		return nil, ErrPublicKeyNotSet
 	}
 	output := bytes.NewBuffer(nil)
-	err := pubKeyIO(r.pubkey, bytes.NewReader(input), output, true)
+	err := publicKeyIO(r.publicKey, bytes.NewReader(input), output, true)
 	if err != nil {
 		return nil, err
 	}
@@ -44,11 +53,11 @@ func (r *RSAPublicKey) Encrypt(input []byte) ([]byte, error) {
 
 // 公钥解密
 func (r *RSAPublicKey) Decrypt(input []byte) ([]byte, error) {
-	if r.pubkey == nil {
+	if r.publicKey == nil {
 		return nil, ErrPublicKeyNotSet
 	}
 	output := bytes.NewBuffer(nil)
-	err := pubKeyIO(r.pubkey, bytes.NewReader(input), output, false)
+	err := publicKeyIO(r.publicKey, bytes.NewReader(input), output, false)
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +74,7 @@ func (r *RSAPublicKey) VerifySignMd5(data string, signData string) error {
 	}
 	hash := md5.New()
 	hash.Write([]byte(data))
-	return rsa.VerifyPKCS1v15(r.pubkey, crypto.MD5, hash.Sum(nil), sign)
+	return rsa.VerifyPKCS1v15(r.publicKey, crypto.MD5, hash.Sum(nil), sign)
 }
 
 /**
@@ -74,7 +83,7 @@ func (r *RSAPublicKey) VerifySignMd5(data string, signData string) error {
 func (r *RSAPublicKey) VerifySignSha1(data []byte, sign []byte) error {
 	hash := sha1.New()
 	hash.Write(data)
-	return rsa.VerifyPKCS1v15(r.pubkey, crypto.SHA1, hash.Sum(nil), sign)
+	return rsa.VerifyPKCS1v15(r.publicKey, crypto.SHA1, hash.Sum(nil), sign)
 }
 
 /**
@@ -83,6 +92,5 @@ func (r *RSAPublicKey) VerifySignSha1(data []byte, sign []byte) error {
 func (r *RSAPublicKey) VerifySignSha256(data []byte, sign []byte) error {
 	hash := sha256.New()
 	hash.Write(data)
-
-	return rsa.VerifyPKCS1v15(r.pubkey, crypto.SHA256, hash.Sum(nil), sign)
+	return rsa.VerifyPKCS1v15(r.publicKey, crypto.SHA256, hash.Sum(nil), sign)
 }
