@@ -61,10 +61,10 @@ func Test_SetPrivateKey(t *testing.T) {
 // 公钥加密私钥解密
 func Test_PubENCTYPTPriDECRYPT(t *testing.T) {
 	a := NewRSA()
-	if err := a.SetPublicKey(testPubkey); err != nil {
+	if err := a.SetPublicKeyBytes(testPubkey); err != nil {
 		t.Error(err)
 	}
-	if err := a.SetPrivateKey(testPrivatekey); err != nil {
+	if err := a.SetPrivateKeyBytes(testPrivatekey); err != nil {
 		t.Error(err)
 	}
 	pubenctypt, err := a.PublicKey().Encrypt([]byte(`hello world`))
@@ -84,10 +84,10 @@ func Test_PubENCTYPTPriDECRYPT(t *testing.T) {
 // 公钥解密私钥加密
 func Test_PriENCTYPTPubDECRYPT(t *testing.T) {
 	a := NewRSA()
-	if err := a.SetPublicKey(testPubkey); err != nil {
+	if err := a.SetPublicKeyBytes(testPubkey); err != nil {
 		t.Error(err)
 	}
-	if err := a.SetPrivateKey(testPrivatekey); err != nil {
+	if err := a.SetPrivateKeyBytes(testPrivatekey); err != nil {
 		t.Error(err)
 	}
 	prienctypt, err := a.PrivateKey().Encrypt([]byte(`hello world`))
