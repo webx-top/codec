@@ -11,7 +11,7 @@ func TestAes(t *testing.T) {
 		paykey = com.RandomString(32)
 	)
 
-	crypto := NewAesCrypto(`AES-256-ECB`)
+	crypto := NewAES(`AES-256-ECB`)
 	plaintext := `admpub.com`
 	crypted := crypto.Encode(plaintext, paykey)
 	if crypto.Decode(crypted, paykey) != plaintext {
