@@ -1,14 +1,14 @@
 package codec
 
 import (
+	"fmt"
 	"testing"
-
-	"github.com/webx-top/com"
+	"time"
 )
 
 func TestAes(t *testing.T) {
 	var (
-		paykey = com.RandomString(32)
+		paykey = fmt.Sprintf(`%032d`, time.Now().UnixMicro())
 	)
 
 	crypto := NewAES(`AES-256-ECB`)
