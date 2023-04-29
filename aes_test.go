@@ -18,4 +18,32 @@ func TestAes(t *testing.T) {
 		t.Fatal(`failed`)
 	}
 	//t.Fatal(crypto.Decode(crypted, paykey))
+
+	GenAESKey([]byte(`2`))
+}
+
+func TestGenAESKey(t *testing.T) {
+	key := GenAESKey([]byte(`2`))
+	t.Logf(`key: [%s]`, key)
+	if string(key) != `               2` {
+		t.Fatal(`failed`)
+	}
+
+	key = GenAESKey([]byte(`123`))
+	t.Logf(`key: [%s]`, key)
+	if string(key) != `             123` {
+		t.Fatal(`failed`)
+	}
+
+	key = GenAESKey([]byte(``))
+	t.Logf(`key: [%s]`, key)
+	if string(key) != `                ` {
+		t.Fatal(`failed`)
+	}
+
+	key = GenAESKey([]byte(`12345678901234567890`))
+	t.Logf(`key: [%s]`, key)
+	if string(key) != `1234567890123456` {
+		t.Fatal(`failed`)
+	}
 }
